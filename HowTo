@@ -1,0 +1,28 @@
+############################################################################################
+##############                                                                     #########
+############## Copy files from a remote Grid-Site to your local machine.           #########
+############## Alternativly you can use the script ./CopyFileFromOtherTier2.sh     #########
+############## which does the following automated for you.                         #########
+##############                                                                     ######### 
+############################################################################################
+
+1.
+Find the desired dataset in DBS. You'll need a site-name T2-XY-ABCD and one file-name file.root
+There seem to be problems with T1, so try to prefer T2-sites. If you want/have to copy from T1, try to add "_MSS" to the site-name, e.g. T1_US_FNAL_MSS
+
+2.
+>cvs co UserCode/RWTH3b/GridTools
+cd to GridTools
+>voms-proxy-init --voms cms   (if needed)
+
+3.
+>source setup.sh
+>python2.6 GetSRMURLfromLFN.py --cmsname=T2_XY_ABCD --lfn=file.root
+(e.g. python2.6 GetSRMURLfromLFN.py --cmsname=T2_ES_CIEMAT --lfn=/store/data/Commissioning10/MinimumBias/RECO/May6thReReco-v1/0116/D8766FDD-3A5C-DF11-BCF1-00261894394B.root)
+This will print the complete srm-path of the desired file
+
+4.
+Copy the file to your machine by doing
+>srmcp -2 <srm-path from above> file:///DestinationPath/destination.root
+The number of slashes is important! If you want to copy to your user-area, you have to do: srmcp -2 <srm-path from above> file:////user/myName/myRootFile.root
+Yes, those are four slashes!
