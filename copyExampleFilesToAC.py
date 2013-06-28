@@ -23,6 +23,8 @@ lines = [ l.strip('\n') for l in file.readlines()]
 phedex = PhEDExDatasvcInfo.PhEDExDatasvcInfo()
 srmTimeout = 30
 targetAc='srm://grid-srm.physik.rwth-aachen.de:8443/srm/managerv2?SFN=/pnfs/physik.rwth-aachen.de/cms/store/user/fhohle//OfficialSamples'
+targetDESY='srm://dcache-se-cms.desy.de:8443/srm/managerv2?SFN=/pnfs/desy.de/cms/tier2/store/user/fhohle/OfficialSamples'
+target=targetAc
 maxNum = len(lines)
 failed = []
 for i,line in enumerate(lines):
@@ -43,11 +45,12 @@ for i,line in enumerate(lines):
       foldername = re.sub('\/','__',datasetname.lstrip('\/'))
       filenameNew =  re.match('.*\/([^\/]*\.root)',filename).group(1)
       print srmPath
-      lcgCpCommand = "lcg-cp -v --srm-timeout "+str(srmTimeout)+" "+srmPath+" "+targetAc+"/"+foldername+"/"+filenameNew
+      lcgCpCommand = "lcg-cp -v --srm-timeout "+str(srmTimeout)+" "+srmPath+" "+target+"/"+foldername+"/"+filenameNew
       print lcgCpCommand
       output = subprocess.Popen([lcgCpCommand],shell=True,stdout=subprocess.PIPE,env=os.environ)
       output.wait()
       errorcode = output.returncode
+      print "TEST ERRORCODE ",errorcode
       if errorcode == 0:
         break
     if errorcode != 0:
