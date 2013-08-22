@@ -1,0 +1,3 @@
+uberftp sbgse1.in2p3.fr "ls dpm/in2p3.fr/home/cms/phedex/store"
+uberftp grid-ftp.physik.rwth-aachen.de "ls pnfs/physik.rwth-aachen.de/cms/store"
+

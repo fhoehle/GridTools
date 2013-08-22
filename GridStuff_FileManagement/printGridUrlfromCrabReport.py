@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import getopt,sys
+import getopt,sys,re
 from xml.dom.minidom import *
 # usage for file in $(ls crab_0_121012_230338/res/crab_fjr_*.xml); do ../FileManagment/trunk/printGridUrlfromCrabReport.py --xmlFile $file --useAnalysisFile | grep srm; done >& Ntuple_files.txt
 def myGetSubNodeByName(node,name):
@@ -39,4 +39,7 @@ if usePoolOutputFile:
 if useAnalysisFile:
  analysisFile = myGetSubNodeByName(fwkRep,"AnalysisFile")
  analysisFileGridUrl = myGetSubNodeByName(analysisFile,"SurlForGrid")
- print analysisFileGridUrl.getAttribute("Value")
+ fileLoc = analysisFileGridUrl.getAttribute("Value") 
+ test= re.sub('srm://grid-srm.physik.rwth-aachen.de:8443/srm/managerv2\?SFN=','dcap://grid-dcap.physik.rwth-aachen.de',fileLoc) #dcap:\/\/grid-dcap\.physik\.rwth-aachen\.de',fileLoc)
+ print  test
+ 
