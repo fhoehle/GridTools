@@ -4,20 +4,7 @@ import xml.dom.minidom as minidom
 # usage for file in $(ls crab_0_121012_230338/res/crab_fjr_*.xml); do ../FileManagment/trunk/printGridUrlfromCrabReport.py --xmlFile $file --useAnalysisFile | grep srm; done >& Ntuple_files.txt
 sys.path.append(os.getenv('CMSSW_BASE')+os.path.sep+'MyCMSSWAnalysisTools')
 from CrabTools import myGetSubNodeByName
-def main():
-  parser = argparse.ArgumentParser()
-  parser.add_argument('--useAnalysisFile',action='store_true',default=False,help=' if Analysis File should be used')
-  parser.add_argument('--usePoolOutputFile',action='store_true',default=False,help=' if Poolouputmodule File should be used')
-  parser.add_argument('--xmlFiles',nargs='+',default=[],help=' list of input xmlFiles')
-  parser.add_argument('--debug',action='store_true',default=False,help=' debug on off')
-  parser.add_argument('--printDcapPath',action='store_true',default=False,help=' return dcapPath defualt is srm')
-  parser.add_argument('--ignoreFailedJobs',action='store_true',default=False,help=' ignore jobs wichi are failed, output is less than number of jobs')
-  args=parser.parse_args()
-  if args.xmlFiles == [] or (args.useAnalysisFile and args.usePoolOutputFile) or (not args.usePoolOutputFile and not args.useAnalysisFile):
-     parser.print_help()
-     print "--useAnalysisFile OR --usePoolOutputFile"
-     sys.exit(1)
-  print "\n".join(getFileNames(args.useAnalysisFile,args.usePoolOutputFile,args.ignoreFailedJobs,args.xmlFiles,args.debug,args.printDcapPath).values())
+###########
 def getFileNames(useAnalysisFile,usePoolOutputFile,ignoreFailedJobs,xmlFiles,debug,printDcapPath):  
   fileNames={}
   import re
@@ -74,5 +61,20 @@ def getFileNames(useAnalysisFile,usePoolOutputFile,ignoreFailedJobs,xmlFiles,deb
     sys.stdout.flush()
   return fileNames
 ###############
+def main():
+  parser = argparse.ArgumentParser()
+  parser.add_argument('--useAnalysisFile',action='store_true',default=False,help=' if Analysis File should be used')
+  parser.add_argument('--usePoolOutputFile',action='store_true',default=False,help=' if Poolouputmodule File should be used')
+  parser.add_argument('--xmlFiles',nargs='+',default=[],help=' list of input xmlFiles')
+  parser.add_argument('--debug',action='store_true',default=False,help=' debug on off')
+  parser.add_argument('--printDcapPath',action='store_true',default=False,help=' return dcapPath defualt is srm')
+  parser.add_argument('--ignoreFailedJobs',action='store_true',default=False,help=' ignore jobs wichi are failed, output is less than number of jobs')
+  args=parser.parse_args()
+  if args.xmlFiles == [] or (args.useAnalysisFile and args.usePoolOutputFile) or (not args.usePoolOutputFile and not args.useAnalysisFile):
+     parser.print_help()
+     print "--useAnalysisFile OR --usePoolOutputFile"
+     sys.exit(1)
+  print "\n".join(getFileNames(args.useAnalysisFile,args.usePoolOutputFile,args.ignoreFailedJobs,args.xmlFiles,args.debug,args.printDcapPath).values())
+#######################
 if __name__ == "__main__":
   main()
