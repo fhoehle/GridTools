@@ -12,6 +12,10 @@ def getFileNames(useAnalysisFile,usePoolOutputFile,ignoreFailedJobs,xmlFiles,deb
     dom = minidom.parse(xmlFile)
     jobNum = re.match('.*/crab_fjr_([0-9]+)\.xml',xmlFile).group(1) 
     fwkRep = myGetSubNodeByName(dom,"FrameworkJobReport")#dom.childNodes[0]
+    if len(fwkRep) != 1:
+      print "multiple FrameworkJobReports found"
+      return None 
+    fwkRep = fwkRep[0]
     if fwkRep.getAttribute("Status") != "Success" :
       if not ignoreFailedJobs:
         sys.exit("jobReport said not successful "+fwkRep.getAttribute("Status")+" "+xmlFile)
@@ -20,8 +24,21 @@ def getFileNames(useAnalysisFile,usePoolOutputFile,ignoreFailedJobs,xmlFiles,deb
        
     # ExitCode
     exitCode = myGetSubNodeByName(fwkRep,"ExitCode")
-    fwkExitCode =  myGetSubNodeByName(fwkRep,"FrameworkError")
-    fwkExitCode = fwkExitCode.getAttribute("ExitStatus")
+    if len(exitCode) != 1:
+      print "multiple ExitCodes found"
+      return None
+    exitCode = exitCode[0]
+    #
+    fwkError =  myGetSubNodeByName(fwkRep,"FrameworkError")
+    if len(fwkError) != 1:
+      print "multiple FrameworkError found"
+      return None
+    fwkError = fwkError[0]
+    fwkExitCode = fwkError.getAttribute("ExitStatus")
+    if len(fwkExitCode) != 1:
+      print "multiple ExitStatus found"
+      return None
+    fwkExitCode = fwkExitCode[0]
     if str(fwkExitCode) != "0":
       if not ignoreFailedJobs:
         sys.exit("not all finished/done "+xmlFile+" "+str(fwkExitCode))
@@ -34,7 +51,15 @@ def getFileNames(useAnalysisFile,usePoolOutputFile,ignoreFailedJobs,xmlFiles,deb
     # output files
     if usePoolOutputFile:
      poolOutputFile = myGetSubNodeByName(fwkRep,"File")
+     if len(poolOutputFile) != 1:
+       print "multiple poolOutputFiles found"
+       return None
+     poolOutputFile=poolOutputFile[0]
      poolOutputFileGridUrl = myGetSubNodeByName(poolOutputFile,"SurlForGrid")
+     if len(poolOutputFileGridUrl) != 1:
+        print "multiple poolOutputFileGridUrls found"
+        return None
+     poolOutputFileGridUrl=poolOutputFileGridUrl[0]
      if poolOutputFileGridUrl:
        poolOutputLoc = str(poolOutputFileGridUrl.firstChild.nodeValue).strip()
        if printDcapPath:
@@ -47,7 +72,15 @@ def getFileNames(useAnalysisFile,usePoolOutputFile,ignoreFailedJobs,xmlFiles,deb
        print "error ",xmlFile
     if useAnalysisFile:
      analysisFile = myGetSubNodeByName(fwkRep,"AnalysisFile")
+     if len(analysisFile) != 1:
+       print "multiple analysisFiles found "
+       return None
+     analysisFile=analysisFile[1]
      analysisFileGridUrl = myGetSubNodeByName(analysisFile,"SurlForGrid")
+     if len(analysisFileGridUrl) != 1:
+       print "multiple analysisFileGridUrls found"
+       return None
+     analysisFileGridUrl=analysisFileGridUrl[0]
      if analysisFileGridUrl:
        fileLoc = analysisFileGridUrl.getAttribute("Value") 
        if printDcapPath:
